@@ -5,13 +5,16 @@ var_num = 0
 const_tab = {}
 const_num = 0
 mem_tab = {}
-P_CODE = []
+P_CODE=[]
+p_line=0
 
 def p_program(p):
     'program : BEGIN statementList END'
-    global P_CODE
-    P_CODE.append("STOP")
-    pass
+    global p_line,P_CODE
+    p[0]=p[2]+['STOP']
+    p_line+=1
+    P_CODE+=p[0]
+    print(len(p[0]))
 
 def p_empty(p):
     'empty :'
@@ -24,7 +27,7 @@ def p_statementList(p):
     if len(p)==4:
         p[0]=p[1]+p[3]
     else:
-        p[0]=0
+        p[0]=[]
 
 def p_statement(p):
     '''statement : IDENTIFIER ASSIGN expression
@@ -33,29 +36,37 @@ def p_statement(p):
                  | WHILE relation DO statementList OD
                  | WRITE LPAREN expression RPAREN
     '''
-    global mem_tab,P_CODE
-    p[0]=0
+    global mem_tab,p_line
+    p[0]=[]
     if p[2]==':=':
         mem_address = mem_tab[p[1]][1]
-        P_CODE.append(f"STORE {mem_address}")
-        p[0]=p[3]+1
+        p[0]=p[3]+[f"STORE {mem_address}"]
+        p_line+=1
     if p[1]=='write':
-        P_CODE.append('OUT')
-        p[0]=p[3]+1
+        p[0]=p[3]+['OUT']
+        p_line+=1
     if p[1]=='if':
-        print(p[2])
-        print(p[4])
+        if len(p)==6:
+            p_line+=1
+            p[0]=p[2]+[f'JMP_NO {len(p[4])+1}']+p[4]
+        elif len(p)==8:
+            p_line+=2
+            p[0]=p[2]+[f'JMP_NO {len(p[4])+2}']+p[4]+[f'JMP {len(p[6])+1}']+p[6]
+    if p[1]=='while':
+        p[0]=p[2]+[f"JMP_NO {len(p[4])+2}"]+p[4]+[f"JMP {-len(p[2])-len(p[4])}"]
 
 def p_expression(p):
     '''expression : term
                   | expression ADDOP term
     '''
+    global p_line
     if len(p)==4:
         if p[2]=='A_PLUS':
-            P_CODE.append('ADD')
+            p[0]=p[1]+p[3]+['ADD']
+            p_line+=1
         elif p[2]=='A_MINUS':
-            P_CODE.append('SUB')
-        p[0]=p[1]+p[3]+1
+            p[0]=p[1]+p[3]+['SUB']
+            p_line+=1
     else:
         p[0]=p[1]
 
@@ -63,13 +74,14 @@ def p_term(p):
     '''term : factor
             | factor MULOP factor
     '''
-    global P_CODE
+    global p_line
     if len(p)==4:
         if p[2]=='A_MULTIPLY':
-            P_CODE.append('MULT')
+            p[0]=p[1]+p[3]+['MULT']
+            p_line+=1
         elif p[2]=='A_DIVIDE':
-            P_CODE.append('DIV')
-        p[0]=p[1]+p[3]+1
+            p[0]=p[1]+p[3]+['DIV']
+            p_line+=1
     else:
         p[0]=p[1]
 
@@ -79,34 +91,49 @@ def p_factor(p):
               | READ
               | LPAREN expression RPAREN
     '''
-    global mem_tab,P_CODE
+    global mem_tab,p_line
     if len(p)==2:
         if p[1]=='read':
-            P_CODE.append('INPUT')
+            p[0]=['INPUT']
+            p_line+=1
         else:
             mem_address = mem_tab[p[1]][1]
-            P_CODE.append(f"LOAD {mem_address}")
-        p[0]=1
+            p[0]=[f"LOAD {mem_address}"]
+            p_line+=1
     else:
         p[0]=p[2]
 
 def p_relation(p):
     'relation : expression CMP expression'
-    global mem_tab,P_CODE
-    P_CODE.append('CMP')
-    p[0]=p[1]+p[3]+1
+    global p_line
+    global mem_tab
+    p[0]=p[1]+p[3]+['CMP']
+    p_line+=1
 
 parser = yacc.yacc(debug=True)
 
 if __name__=='__main__':
     data = '''begin
-        x := read*3;
-        y := read;
-        a := (34+34)*13;
-        z := (x-y+a)/a;
+        x := 3;
+        y := 4;
         if x <= y then
             write(x);
             write(y);
+            while x<5 do
+                x:=x+1;
+            od;
+        else
+            write(y);
+            write(x);
+            if x=3 then
+                write(3);
+                x:=x+3;
+                write((x*x)/4);
+            else
+                write(4);
+                x:=x+4;
+                write(x);
+            fi;
         fi;
     end
     '''
@@ -126,5 +153,8 @@ if __name__=='__main__':
         mem_tab[key] = (var_tab[key][0], var_tab[key][1]+len(const_tab))
     print(mem_tab)
     parser.parse(data, lexer=lexer)
-    print(P_CODE)
-    print(['a']+['b'])
+    print(p_line)
+    i=0
+    for p in P_CODE:
+        print(f"{i}: {p}")
+        i+=1

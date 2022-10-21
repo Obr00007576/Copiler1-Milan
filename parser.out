@@ -1,5 +1,9 @@
 Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 
+Unused terminals:
+
+    COMMA
+
 Grammar
 
 Rule 0     S' -> program
@@ -8,54 +12,61 @@ Rule 2     empty -> <empty>
 Rule 3     statementList -> statement SEMICOLON statementList
 Rule 4     statementList -> empty
 Rule 5     statement -> IDENTIFIER ASSIGN expression
-Rule 6     statement -> IF relation THEN statementList FI
-Rule 7     statement -> IF relation THEN statementList ELSE statementList FI
-Rule 8     statement -> WHILE relation DO statementList OD
-Rule 9     statement -> WRITE LPAREN expression RPAREN
-Rule 10    expression -> term
-Rule 11    expression -> expression ADDOP term
-Rule 12    term -> factor
-Rule 13    term -> factor MULOP factor
-Rule 14    factor -> IDENTIFIER
-Rule 15    factor -> NUMBER
-Rule 16    factor -> READ
-Rule 17    factor -> LPAREN expression RPAREN
-Rule 18    relation -> expression CMP expression
+Rule 6     statement -> TYPE IDENTIFIER ASSIGN expression
+Rule 7     statement -> IF relation THEN statementList FI
+Rule 8     statement -> IF relation THEN statementList ELSE statementList FI
+Rule 9     statement -> WHILE relation DO statementList OD
+Rule 10    statement -> WRITE LPAREN expression RPAREN
+Rule 11    expression -> term
+Rule 12    expression -> expression ADDOP term
+Rule 13    term -> factor
+Rule 14    term -> factor MULOP factor
+Rule 15    factor -> IDENTIFIER
+Rule 16    factor -> LPAREN TYPE RPAREN IDENTIFIER
+Rule 17    factor -> NUMBER_INT
+Rule 18    factor -> NUMBER_FLOAT
+Rule 19    factor -> READ
+Rule 20    factor -> LPAREN expression RPAREN
+Rule 21    factor -> LPAREN TYPE RPAREN LPAREN expression RPAREN
+Rule 22    relation -> expression CMP expression
 
 Terminals, with rules where they appear
 
-ADDOP                : 11
-ASSIGN               : 5
+ADDOP                : 12
+ASSIGN               : 5 6
 BEGIN                : 1
-CMP                  : 18
-DO                   : 8
-ELSE                 : 7
+CMP                  : 22
+COMMA                : 
+DO                   : 9
+ELSE                 : 8
 END                  : 1
-FI                   : 6 7
-IDENTIFIER           : 5 14
-IF                   : 6 7
-LPAREN               : 9 17
-MULOP                : 13
-NUMBER               : 15
-OD                   : 8
-READ                 : 16
-RPAREN               : 9 17
+FI                   : 7 8
+IDENTIFIER           : 5 6 15 16
+IF                   : 7 8
+LPAREN               : 10 16 20 21 21
+MULOP                : 14
+NUMBER_FLOAT         : 18
+NUMBER_INT           : 17
+OD                   : 9
+READ                 : 19
+RPAREN               : 10 16 20 21 21
 SEMICOLON            : 3
-THEN                 : 6 7
-WHILE                : 8
-WRITE                : 9
+THEN                 : 7 8
+TYPE                 : 6 16 21
+WHILE                : 9
+WRITE                : 10
 error                : 
 
 Nonterminals, with rules where they appear
 
 empty                : 4
-expression           : 5 9 11 17 18 18
-factor               : 12 13 13
+expression           : 5 6 10 12 20 21 22 22
+factor               : 13 14 14
 program              : 0
-relation             : 6 7 8
+relation             : 7 8 9
 statement            : 3
-statementList        : 1 3 6 7 7 8
-term                 : 10 11
+statementList        : 1 3 7 8 8 9
+term                 : 11 12
 
 Parsing method: LALR
 
@@ -80,16 +91,18 @@ state 2
     (3) statementList -> . statement SEMICOLON statementList
     (4) statementList -> . empty
     (5) statement -> . IDENTIFIER ASSIGN expression
-    (6) statement -> . IF relation THEN statementList FI
-    (7) statement -> . IF relation THEN statementList ELSE statementList FI
-    (8) statement -> . WHILE relation DO statementList OD
-    (9) statement -> . WRITE LPAREN expression RPAREN
+    (6) statement -> . TYPE IDENTIFIER ASSIGN expression
+    (7) statement -> . IF relation THEN statementList FI
+    (8) statement -> . IF relation THEN statementList ELSE statementList FI
+    (9) statement -> . WHILE relation DO statementList OD
+    (10) statement -> . WRITE LPAREN expression RPAREN
     (2) empty -> .
 
     IDENTIFIER      shift and go to state 6
-    IF              shift and go to state 7
-    WHILE           shift and go to state 8
-    WRITE           shift and go to state 9
+    TYPE            shift and go to state 7
+    IF              shift and go to state 8
+    WHILE           shift and go to state 9
+    WRITE           shift and go to state 10
     END             reduce using rule 2 (empty -> .)
 
     statementList                  shift and go to state 3
@@ -100,14 +113,14 @@ state 3
 
     (1) program -> BEGIN statementList . END
 
-    END             shift and go to state 10
+    END             shift and go to state 11
 
 
 state 4
 
     (3) statementList -> statement . SEMICOLON statementList
 
-    SEMICOLON       shift and go to state 11
+    SEMICOLON       shift and go to state 12
 
 
 state 5
@@ -124,248 +137,300 @@ state 6
 
     (5) statement -> IDENTIFIER . ASSIGN expression
 
-    ASSIGN          shift and go to state 12
+    ASSIGN          shift and go to state 13
 
 
 state 7
 
-    (6) statement -> IF . relation THEN statementList FI
-    (7) statement -> IF . relation THEN statementList ELSE statementList FI
-    (18) relation -> . expression CMP expression
-    (10) expression -> . term
-    (11) expression -> . expression ADDOP term
-    (12) term -> . factor
-    (13) term -> . factor MULOP factor
-    (14) factor -> . IDENTIFIER
-    (15) factor -> . NUMBER
-    (16) factor -> . READ
-    (17) factor -> . LPAREN expression RPAREN
+    (6) statement -> TYPE . IDENTIFIER ASSIGN expression
 
-    IDENTIFIER      shift and go to state 17
-    NUMBER          shift and go to state 18
-    READ            shift and go to state 19
-    LPAREN          shift and go to state 20
+    IDENTIFIER      shift and go to state 14
 
-    relation                       shift and go to state 13
-    expression                     shift and go to state 14
-    term                           shift and go to state 15
-    factor                         shift and go to state 16
 
 state 8
 
-    (8) statement -> WHILE . relation DO statementList OD
-    (18) relation -> . expression CMP expression
-    (10) expression -> . term
-    (11) expression -> . expression ADDOP term
-    (12) term -> . factor
-    (13) term -> . factor MULOP factor
-    (14) factor -> . IDENTIFIER
-    (15) factor -> . NUMBER
-    (16) factor -> . READ
-    (17) factor -> . LPAREN expression RPAREN
+    (7) statement -> IF . relation THEN statementList FI
+    (8) statement -> IF . relation THEN statementList ELSE statementList FI
+    (22) relation -> . expression CMP expression
+    (11) expression -> . term
+    (12) expression -> . expression ADDOP term
+    (13) term -> . factor
+    (14) term -> . factor MULOP factor
+    (15) factor -> . IDENTIFIER
+    (16) factor -> . LPAREN TYPE RPAREN IDENTIFIER
+    (17) factor -> . NUMBER_INT
+    (18) factor -> . NUMBER_FLOAT
+    (19) factor -> . READ
+    (20) factor -> . LPAREN expression RPAREN
+    (21) factor -> . LPAREN TYPE RPAREN LPAREN expression RPAREN
 
-    IDENTIFIER      shift and go to state 17
-    NUMBER          shift and go to state 18
-    READ            shift and go to state 19
+    IDENTIFIER      shift and go to state 19
     LPAREN          shift and go to state 20
+    NUMBER_INT      shift and go to state 21
+    NUMBER_FLOAT    shift and go to state 22
+    READ            shift and go to state 23
 
-    relation                       shift and go to state 21
-    expression                     shift and go to state 14
-    term                           shift and go to state 15
-    factor                         shift and go to state 16
+    relation                       shift and go to state 15
+    expression                     shift and go to state 16
+    term                           shift and go to state 17
+    factor                         shift and go to state 18
 
 state 9
 
-    (9) statement -> WRITE . LPAREN expression RPAREN
+    (9) statement -> WHILE . relation DO statementList OD
+    (22) relation -> . expression CMP expression
+    (11) expression -> . term
+    (12) expression -> . expression ADDOP term
+    (13) term -> . factor
+    (14) term -> . factor MULOP factor
+    (15) factor -> . IDENTIFIER
+    (16) factor -> . LPAREN TYPE RPAREN IDENTIFIER
+    (17) factor -> . NUMBER_INT
+    (18) factor -> . NUMBER_FLOAT
+    (19) factor -> . READ
+    (20) factor -> . LPAREN expression RPAREN
+    (21) factor -> . LPAREN TYPE RPAREN LPAREN expression RPAREN
 
-    LPAREN          shift and go to state 22
+    IDENTIFIER      shift and go to state 19
+    LPAREN          shift and go to state 20
+    NUMBER_INT      shift and go to state 21
+    NUMBER_FLOAT    shift and go to state 22
+    READ            shift and go to state 23
 
+    relation                       shift and go to state 24
+    expression                     shift and go to state 16
+    term                           shift and go to state 17
+    factor                         shift and go to state 18
 
 state 10
+
+    (10) statement -> WRITE . LPAREN expression RPAREN
+
+    LPAREN          shift and go to state 25
+
+
+state 11
 
     (1) program -> BEGIN statementList END .
 
     $end            reduce using rule 1 (program -> BEGIN statementList END .)
 
 
-state 11
+state 12
 
     (3) statementList -> statement SEMICOLON . statementList
     (3) statementList -> . statement SEMICOLON statementList
     (4) statementList -> . empty
     (5) statement -> . IDENTIFIER ASSIGN expression
-    (6) statement -> . IF relation THEN statementList FI
-    (7) statement -> . IF relation THEN statementList ELSE statementList FI
-    (8) statement -> . WHILE relation DO statementList OD
-    (9) statement -> . WRITE LPAREN expression RPAREN
+    (6) statement -> . TYPE IDENTIFIER ASSIGN expression
+    (7) statement -> . IF relation THEN statementList FI
+    (8) statement -> . IF relation THEN statementList ELSE statementList FI
+    (9) statement -> . WHILE relation DO statementList OD
+    (10) statement -> . WRITE LPAREN expression RPAREN
     (2) empty -> .
 
     IDENTIFIER      shift and go to state 6
-    IF              shift and go to state 7
-    WHILE           shift and go to state 8
-    WRITE           shift and go to state 9
+    TYPE            shift and go to state 7
+    IF              shift and go to state 8
+    WHILE           shift and go to state 9
+    WRITE           shift and go to state 10
     END             reduce using rule 2 (empty -> .)
     FI              reduce using rule 2 (empty -> .)
     ELSE            reduce using rule 2 (empty -> .)
     OD              reduce using rule 2 (empty -> .)
 
     statement                      shift and go to state 4
-    statementList                  shift and go to state 23
+    statementList                  shift and go to state 26
     empty                          shift and go to state 5
-
-state 12
-
-    (5) statement -> IDENTIFIER ASSIGN . expression
-    (10) expression -> . term
-    (11) expression -> . expression ADDOP term
-    (12) term -> . factor
-    (13) term -> . factor MULOP factor
-    (14) factor -> . IDENTIFIER
-    (15) factor -> . NUMBER
-    (16) factor -> . READ
-    (17) factor -> . LPAREN expression RPAREN
-
-    IDENTIFIER      shift and go to state 17
-    NUMBER          shift and go to state 18
-    READ            shift and go to state 19
-    LPAREN          shift and go to state 20
-
-    expression                     shift and go to state 24
-    term                           shift and go to state 15
-    factor                         shift and go to state 16
 
 state 13
 
-    (6) statement -> IF relation . THEN statementList FI
-    (7) statement -> IF relation . THEN statementList ELSE statementList FI
+    (5) statement -> IDENTIFIER ASSIGN . expression
+    (11) expression -> . term
+    (12) expression -> . expression ADDOP term
+    (13) term -> . factor
+    (14) term -> . factor MULOP factor
+    (15) factor -> . IDENTIFIER
+    (16) factor -> . LPAREN TYPE RPAREN IDENTIFIER
+    (17) factor -> . NUMBER_INT
+    (18) factor -> . NUMBER_FLOAT
+    (19) factor -> . READ
+    (20) factor -> . LPAREN expression RPAREN
+    (21) factor -> . LPAREN TYPE RPAREN LPAREN expression RPAREN
 
-    THEN            shift and go to state 25
+    IDENTIFIER      shift and go to state 19
+    LPAREN          shift and go to state 20
+    NUMBER_INT      shift and go to state 21
+    NUMBER_FLOAT    shift and go to state 22
+    READ            shift and go to state 23
 
+    expression                     shift and go to state 27
+    term                           shift and go to state 17
+    factor                         shift and go to state 18
 
 state 14
 
-    (18) relation -> expression . CMP expression
-    (11) expression -> expression . ADDOP term
+    (6) statement -> TYPE IDENTIFIER . ASSIGN expression
 
-    CMP             shift and go to state 26
-    ADDOP           shift and go to state 27
+    ASSIGN          shift and go to state 28
 
 
 state 15
 
-    (10) expression -> term .
+    (7) statement -> IF relation . THEN statementList FI
+    (8) statement -> IF relation . THEN statementList ELSE statementList FI
 
-    CMP             reduce using rule 10 (expression -> term .)
-    ADDOP           reduce using rule 10 (expression -> term .)
-    SEMICOLON       reduce using rule 10 (expression -> term .)
-    RPAREN          reduce using rule 10 (expression -> term .)
-    THEN            reduce using rule 10 (expression -> term .)
-    DO              reduce using rule 10 (expression -> term .)
+    THEN            shift and go to state 29
 
 
 state 16
 
-    (12) term -> factor .
-    (13) term -> factor . MULOP factor
+    (22) relation -> expression . CMP expression
+    (12) expression -> expression . ADDOP term
 
-    CMP             reduce using rule 12 (term -> factor .)
-    ADDOP           reduce using rule 12 (term -> factor .)
-    SEMICOLON       reduce using rule 12 (term -> factor .)
-    RPAREN          reduce using rule 12 (term -> factor .)
-    THEN            reduce using rule 12 (term -> factor .)
-    DO              reduce using rule 12 (term -> factor .)
-    MULOP           shift and go to state 28
+    CMP             shift and go to state 30
+    ADDOP           shift and go to state 31
 
 
 state 17
 
-    (14) factor -> IDENTIFIER .
+    (11) expression -> term .
 
-    MULOP           reduce using rule 14 (factor -> IDENTIFIER .)
-    CMP             reduce using rule 14 (factor -> IDENTIFIER .)
-    ADDOP           reduce using rule 14 (factor -> IDENTIFIER .)
-    SEMICOLON       reduce using rule 14 (factor -> IDENTIFIER .)
-    RPAREN          reduce using rule 14 (factor -> IDENTIFIER .)
-    THEN            reduce using rule 14 (factor -> IDENTIFIER .)
-    DO              reduce using rule 14 (factor -> IDENTIFIER .)
+    CMP             reduce using rule 11 (expression -> term .)
+    ADDOP           reduce using rule 11 (expression -> term .)
+    SEMICOLON       reduce using rule 11 (expression -> term .)
+    RPAREN          reduce using rule 11 (expression -> term .)
+    THEN            reduce using rule 11 (expression -> term .)
+    DO              reduce using rule 11 (expression -> term .)
 
 
 state 18
 
-    (15) factor -> NUMBER .
+    (13) term -> factor .
+    (14) term -> factor . MULOP factor
 
-    MULOP           reduce using rule 15 (factor -> NUMBER .)
-    CMP             reduce using rule 15 (factor -> NUMBER .)
-    ADDOP           reduce using rule 15 (factor -> NUMBER .)
-    SEMICOLON       reduce using rule 15 (factor -> NUMBER .)
-    RPAREN          reduce using rule 15 (factor -> NUMBER .)
-    THEN            reduce using rule 15 (factor -> NUMBER .)
-    DO              reduce using rule 15 (factor -> NUMBER .)
+    CMP             reduce using rule 13 (term -> factor .)
+    ADDOP           reduce using rule 13 (term -> factor .)
+    SEMICOLON       reduce using rule 13 (term -> factor .)
+    RPAREN          reduce using rule 13 (term -> factor .)
+    THEN            reduce using rule 13 (term -> factor .)
+    DO              reduce using rule 13 (term -> factor .)
+    MULOP           shift and go to state 32
 
 
 state 19
 
-    (16) factor -> READ .
+    (15) factor -> IDENTIFIER .
 
-    MULOP           reduce using rule 16 (factor -> READ .)
-    CMP             reduce using rule 16 (factor -> READ .)
-    ADDOP           reduce using rule 16 (factor -> READ .)
-    SEMICOLON       reduce using rule 16 (factor -> READ .)
-    RPAREN          reduce using rule 16 (factor -> READ .)
-    THEN            reduce using rule 16 (factor -> READ .)
-    DO              reduce using rule 16 (factor -> READ .)
+    MULOP           reduce using rule 15 (factor -> IDENTIFIER .)
+    CMP             reduce using rule 15 (factor -> IDENTIFIER .)
+    ADDOP           reduce using rule 15 (factor -> IDENTIFIER .)
+    SEMICOLON       reduce using rule 15 (factor -> IDENTIFIER .)
+    RPAREN          reduce using rule 15 (factor -> IDENTIFIER .)
+    THEN            reduce using rule 15 (factor -> IDENTIFIER .)
+    DO              reduce using rule 15 (factor -> IDENTIFIER .)
 
 
 state 20
 
-    (17) factor -> LPAREN . expression RPAREN
-    (10) expression -> . term
-    (11) expression -> . expression ADDOP term
-    (12) term -> . factor
-    (13) term -> . factor MULOP factor
-    (14) factor -> . IDENTIFIER
-    (15) factor -> . NUMBER
-    (16) factor -> . READ
-    (17) factor -> . LPAREN expression RPAREN
+    (16) factor -> LPAREN . TYPE RPAREN IDENTIFIER
+    (20) factor -> LPAREN . expression RPAREN
+    (21) factor -> LPAREN . TYPE RPAREN LPAREN expression RPAREN
+    (11) expression -> . term
+    (12) expression -> . expression ADDOP term
+    (13) term -> . factor
+    (14) term -> . factor MULOP factor
+    (15) factor -> . IDENTIFIER
+    (16) factor -> . LPAREN TYPE RPAREN IDENTIFIER
+    (17) factor -> . NUMBER_INT
+    (18) factor -> . NUMBER_FLOAT
+    (19) factor -> . READ
+    (20) factor -> . LPAREN expression RPAREN
+    (21) factor -> . LPAREN TYPE RPAREN LPAREN expression RPAREN
 
-    IDENTIFIER      shift and go to state 17
-    NUMBER          shift and go to state 18
-    READ            shift and go to state 19
+    TYPE            shift and go to state 33
+    IDENTIFIER      shift and go to state 19
     LPAREN          shift and go to state 20
+    NUMBER_INT      shift and go to state 21
+    NUMBER_FLOAT    shift and go to state 22
+    READ            shift and go to state 23
 
-    expression                     shift and go to state 29
-    term                           shift and go to state 15
-    factor                         shift and go to state 16
+    expression                     shift and go to state 34
+    term                           shift and go to state 17
+    factor                         shift and go to state 18
 
 state 21
 
-    (8) statement -> WHILE relation . DO statementList OD
+    (17) factor -> NUMBER_INT .
 
-    DO              shift and go to state 30
+    MULOP           reduce using rule 17 (factor -> NUMBER_INT .)
+    CMP             reduce using rule 17 (factor -> NUMBER_INT .)
+    ADDOP           reduce using rule 17 (factor -> NUMBER_INT .)
+    SEMICOLON       reduce using rule 17 (factor -> NUMBER_INT .)
+    RPAREN          reduce using rule 17 (factor -> NUMBER_INT .)
+    THEN            reduce using rule 17 (factor -> NUMBER_INT .)
+    DO              reduce using rule 17 (factor -> NUMBER_INT .)
 
 
 state 22
 
-    (9) statement -> WRITE LPAREN . expression RPAREN
-    (10) expression -> . term
-    (11) expression -> . expression ADDOP term
-    (12) term -> . factor
-    (13) term -> . factor MULOP factor
-    (14) factor -> . IDENTIFIER
-    (15) factor -> . NUMBER
-    (16) factor -> . READ
-    (17) factor -> . LPAREN expression RPAREN
+    (18) factor -> NUMBER_FLOAT .
 
-    IDENTIFIER      shift and go to state 17
-    NUMBER          shift and go to state 18
-    READ            shift and go to state 19
-    LPAREN          shift and go to state 20
+    MULOP           reduce using rule 18 (factor -> NUMBER_FLOAT .)
+    CMP             reduce using rule 18 (factor -> NUMBER_FLOAT .)
+    ADDOP           reduce using rule 18 (factor -> NUMBER_FLOAT .)
+    SEMICOLON       reduce using rule 18 (factor -> NUMBER_FLOAT .)
+    RPAREN          reduce using rule 18 (factor -> NUMBER_FLOAT .)
+    THEN            reduce using rule 18 (factor -> NUMBER_FLOAT .)
+    DO              reduce using rule 18 (factor -> NUMBER_FLOAT .)
 
-    expression                     shift and go to state 31
-    term                           shift and go to state 15
-    factor                         shift and go to state 16
 
 state 23
+
+    (19) factor -> READ .
+
+    MULOP           reduce using rule 19 (factor -> READ .)
+    CMP             reduce using rule 19 (factor -> READ .)
+    ADDOP           reduce using rule 19 (factor -> READ .)
+    SEMICOLON       reduce using rule 19 (factor -> READ .)
+    RPAREN          reduce using rule 19 (factor -> READ .)
+    THEN            reduce using rule 19 (factor -> READ .)
+    DO              reduce using rule 19 (factor -> READ .)
+
+
+state 24
+
+    (9) statement -> WHILE relation . DO statementList OD
+
+    DO              shift and go to state 35
+
+
+state 25
+
+    (10) statement -> WRITE LPAREN . expression RPAREN
+    (11) expression -> . term
+    (12) expression -> . expression ADDOP term
+    (13) term -> . factor
+    (14) term -> . factor MULOP factor
+    (15) factor -> . IDENTIFIER
+    (16) factor -> . LPAREN TYPE RPAREN IDENTIFIER
+    (17) factor -> . NUMBER_INT
+    (18) factor -> . NUMBER_FLOAT
+    (19) factor -> . READ
+    (20) factor -> . LPAREN expression RPAREN
+    (21) factor -> . LPAREN TYPE RPAREN LPAREN expression RPAREN
+
+    IDENTIFIER      shift and go to state 19
+    LPAREN          shift and go to state 20
+    NUMBER_INT      shift and go to state 21
+    NUMBER_FLOAT    shift and go to state 22
+    READ            shift and go to state 23
+
+    expression                     shift and go to state 36
+    term                           shift and go to state 17
+    factor                         shift and go to state 18
+
+state 26
 
     (3) statementList -> statement SEMICOLON statementList .
 
@@ -375,249 +440,378 @@ state 23
     OD              reduce using rule 3 (statementList -> statement SEMICOLON statementList .)
 
 
-state 24
-
-    (5) statement -> IDENTIFIER ASSIGN expression .
-    (11) expression -> expression . ADDOP term
-
-    SEMICOLON       reduce using rule 5 (statement -> IDENTIFIER ASSIGN expression .)
-    ADDOP           shift and go to state 27
-
-
-state 25
-
-    (6) statement -> IF relation THEN . statementList FI
-    (7) statement -> IF relation THEN . statementList ELSE statementList FI
-    (3) statementList -> . statement SEMICOLON statementList
-    (4) statementList -> . empty
-    (5) statement -> . IDENTIFIER ASSIGN expression
-    (6) statement -> . IF relation THEN statementList FI
-    (7) statement -> . IF relation THEN statementList ELSE statementList FI
-    (8) statement -> . WHILE relation DO statementList OD
-    (9) statement -> . WRITE LPAREN expression RPAREN
-    (2) empty -> .
-
-    IDENTIFIER      shift and go to state 6
-    IF              shift and go to state 7
-    WHILE           shift and go to state 8
-    WRITE           shift and go to state 9
-    FI              reduce using rule 2 (empty -> .)
-    ELSE            reduce using rule 2 (empty -> .)
-
-    statementList                  shift and go to state 32
-    statement                      shift and go to state 4
-    empty                          shift and go to state 5
-
-state 26
-
-    (18) relation -> expression CMP . expression
-    (10) expression -> . term
-    (11) expression -> . expression ADDOP term
-    (12) term -> . factor
-    (13) term -> . factor MULOP factor
-    (14) factor -> . IDENTIFIER
-    (15) factor -> . NUMBER
-    (16) factor -> . READ
-    (17) factor -> . LPAREN expression RPAREN
-
-    IDENTIFIER      shift and go to state 17
-    NUMBER          shift and go to state 18
-    READ            shift and go to state 19
-    LPAREN          shift and go to state 20
-
-    expression                     shift and go to state 33
-    term                           shift and go to state 15
-    factor                         shift and go to state 16
-
 state 27
 
-    (11) expression -> expression ADDOP . term
-    (12) term -> . factor
-    (13) term -> . factor MULOP factor
-    (14) factor -> . IDENTIFIER
-    (15) factor -> . NUMBER
-    (16) factor -> . READ
-    (17) factor -> . LPAREN expression RPAREN
+    (5) statement -> IDENTIFIER ASSIGN expression .
+    (12) expression -> expression . ADDOP term
 
-    IDENTIFIER      shift and go to state 17
-    NUMBER          shift and go to state 18
-    READ            shift and go to state 19
-    LPAREN          shift and go to state 20
+    SEMICOLON       reduce using rule 5 (statement -> IDENTIFIER ASSIGN expression .)
+    ADDOP           shift and go to state 31
 
-    term                           shift and go to state 34
-    factor                         shift and go to state 16
 
 state 28
 
-    (13) term -> factor MULOP . factor
-    (14) factor -> . IDENTIFIER
-    (15) factor -> . NUMBER
-    (16) factor -> . READ
-    (17) factor -> . LPAREN expression RPAREN
+    (6) statement -> TYPE IDENTIFIER ASSIGN . expression
+    (11) expression -> . term
+    (12) expression -> . expression ADDOP term
+    (13) term -> . factor
+    (14) term -> . factor MULOP factor
+    (15) factor -> . IDENTIFIER
+    (16) factor -> . LPAREN TYPE RPAREN IDENTIFIER
+    (17) factor -> . NUMBER_INT
+    (18) factor -> . NUMBER_FLOAT
+    (19) factor -> . READ
+    (20) factor -> . LPAREN expression RPAREN
+    (21) factor -> . LPAREN TYPE RPAREN LPAREN expression RPAREN
 
-    IDENTIFIER      shift and go to state 17
-    NUMBER          shift and go to state 18
-    READ            shift and go to state 19
+    IDENTIFIER      shift and go to state 19
     LPAREN          shift and go to state 20
+    NUMBER_INT      shift and go to state 21
+    NUMBER_FLOAT    shift and go to state 22
+    READ            shift and go to state 23
 
-    factor                         shift and go to state 35
+    expression                     shift and go to state 37
+    term                           shift and go to state 17
+    factor                         shift and go to state 18
 
 state 29
 
-    (17) factor -> LPAREN expression . RPAREN
-    (11) expression -> expression . ADDOP term
-
-    RPAREN          shift and go to state 36
-    ADDOP           shift and go to state 27
-
-
-state 30
-
-    (8) statement -> WHILE relation DO . statementList OD
+    (7) statement -> IF relation THEN . statementList FI
+    (8) statement -> IF relation THEN . statementList ELSE statementList FI
     (3) statementList -> . statement SEMICOLON statementList
     (4) statementList -> . empty
     (5) statement -> . IDENTIFIER ASSIGN expression
-    (6) statement -> . IF relation THEN statementList FI
-    (7) statement -> . IF relation THEN statementList ELSE statementList FI
-    (8) statement -> . WHILE relation DO statementList OD
-    (9) statement -> . WRITE LPAREN expression RPAREN
+    (6) statement -> . TYPE IDENTIFIER ASSIGN expression
+    (7) statement -> . IF relation THEN statementList FI
+    (8) statement -> . IF relation THEN statementList ELSE statementList FI
+    (9) statement -> . WHILE relation DO statementList OD
+    (10) statement -> . WRITE LPAREN expression RPAREN
     (2) empty -> .
 
     IDENTIFIER      shift and go to state 6
-    IF              shift and go to state 7
-    WHILE           shift and go to state 8
-    WRITE           shift and go to state 9
-    OD              reduce using rule 2 (empty -> .)
+    TYPE            shift and go to state 7
+    IF              shift and go to state 8
+    WHILE           shift and go to state 9
+    WRITE           shift and go to state 10
+    FI              reduce using rule 2 (empty -> .)
+    ELSE            reduce using rule 2 (empty -> .)
 
-    statementList                  shift and go to state 37
+    statementList                  shift and go to state 38
     statement                      shift and go to state 4
     empty                          shift and go to state 5
 
+state 30
+
+    (22) relation -> expression CMP . expression
+    (11) expression -> . term
+    (12) expression -> . expression ADDOP term
+    (13) term -> . factor
+    (14) term -> . factor MULOP factor
+    (15) factor -> . IDENTIFIER
+    (16) factor -> . LPAREN TYPE RPAREN IDENTIFIER
+    (17) factor -> . NUMBER_INT
+    (18) factor -> . NUMBER_FLOAT
+    (19) factor -> . READ
+    (20) factor -> . LPAREN expression RPAREN
+    (21) factor -> . LPAREN TYPE RPAREN LPAREN expression RPAREN
+
+    IDENTIFIER      shift and go to state 19
+    LPAREN          shift and go to state 20
+    NUMBER_INT      shift and go to state 21
+    NUMBER_FLOAT    shift and go to state 22
+    READ            shift and go to state 23
+
+    expression                     shift and go to state 39
+    term                           shift and go to state 17
+    factor                         shift and go to state 18
+
 state 31
 
-    (9) statement -> WRITE LPAREN expression . RPAREN
-    (11) expression -> expression . ADDOP term
+    (12) expression -> expression ADDOP . term
+    (13) term -> . factor
+    (14) term -> . factor MULOP factor
+    (15) factor -> . IDENTIFIER
+    (16) factor -> . LPAREN TYPE RPAREN IDENTIFIER
+    (17) factor -> . NUMBER_INT
+    (18) factor -> . NUMBER_FLOAT
+    (19) factor -> . READ
+    (20) factor -> . LPAREN expression RPAREN
+    (21) factor -> . LPAREN TYPE RPAREN LPAREN expression RPAREN
 
-    RPAREN          shift and go to state 38
-    ADDOP           shift and go to state 27
+    IDENTIFIER      shift and go to state 19
+    LPAREN          shift and go to state 20
+    NUMBER_INT      shift and go to state 21
+    NUMBER_FLOAT    shift and go to state 22
+    READ            shift and go to state 23
 
+    term                           shift and go to state 40
+    factor                         shift and go to state 18
 
 state 32
 
-    (6) statement -> IF relation THEN statementList . FI
-    (7) statement -> IF relation THEN statementList . ELSE statementList FI
+    (14) term -> factor MULOP . factor
+    (15) factor -> . IDENTIFIER
+    (16) factor -> . LPAREN TYPE RPAREN IDENTIFIER
+    (17) factor -> . NUMBER_INT
+    (18) factor -> . NUMBER_FLOAT
+    (19) factor -> . READ
+    (20) factor -> . LPAREN expression RPAREN
+    (21) factor -> . LPAREN TYPE RPAREN LPAREN expression RPAREN
 
-    FI              shift and go to state 39
-    ELSE            shift and go to state 40
+    IDENTIFIER      shift and go to state 19
+    LPAREN          shift and go to state 20
+    NUMBER_INT      shift and go to state 21
+    NUMBER_FLOAT    shift and go to state 22
+    READ            shift and go to state 23
 
+    factor                         shift and go to state 41
 
 state 33
 
-    (18) relation -> expression CMP expression .
-    (11) expression -> expression . ADDOP term
+    (16) factor -> LPAREN TYPE . RPAREN IDENTIFIER
+    (21) factor -> LPAREN TYPE . RPAREN LPAREN expression RPAREN
 
-    THEN            reduce using rule 18 (relation -> expression CMP expression .)
-    DO              reduce using rule 18 (relation -> expression CMP expression .)
-    ADDOP           shift and go to state 27
+    RPAREN          shift and go to state 42
 
 
 state 34
 
-    (11) expression -> expression ADDOP term .
+    (20) factor -> LPAREN expression . RPAREN
+    (12) expression -> expression . ADDOP term
 
-    CMP             reduce using rule 11 (expression -> expression ADDOP term .)
-    ADDOP           reduce using rule 11 (expression -> expression ADDOP term .)
-    SEMICOLON       reduce using rule 11 (expression -> expression ADDOP term .)
-    RPAREN          reduce using rule 11 (expression -> expression ADDOP term .)
-    THEN            reduce using rule 11 (expression -> expression ADDOP term .)
-    DO              reduce using rule 11 (expression -> expression ADDOP term .)
+    RPAREN          shift and go to state 43
+    ADDOP           shift and go to state 31
 
 
 state 35
 
-    (13) term -> factor MULOP factor .
+    (9) statement -> WHILE relation DO . statementList OD
+    (3) statementList -> . statement SEMICOLON statementList
+    (4) statementList -> . empty
+    (5) statement -> . IDENTIFIER ASSIGN expression
+    (6) statement -> . TYPE IDENTIFIER ASSIGN expression
+    (7) statement -> . IF relation THEN statementList FI
+    (8) statement -> . IF relation THEN statementList ELSE statementList FI
+    (9) statement -> . WHILE relation DO statementList OD
+    (10) statement -> . WRITE LPAREN expression RPAREN
+    (2) empty -> .
 
-    CMP             reduce using rule 13 (term -> factor MULOP factor .)
-    ADDOP           reduce using rule 13 (term -> factor MULOP factor .)
-    SEMICOLON       reduce using rule 13 (term -> factor MULOP factor .)
-    RPAREN          reduce using rule 13 (term -> factor MULOP factor .)
-    THEN            reduce using rule 13 (term -> factor MULOP factor .)
-    DO              reduce using rule 13 (term -> factor MULOP factor .)
+    IDENTIFIER      shift and go to state 6
+    TYPE            shift and go to state 7
+    IF              shift and go to state 8
+    WHILE           shift and go to state 9
+    WRITE           shift and go to state 10
+    OD              reduce using rule 2 (empty -> .)
 
+    statementList                  shift and go to state 44
+    statement                      shift and go to state 4
+    empty                          shift and go to state 5
 
 state 36
 
-    (17) factor -> LPAREN expression RPAREN .
+    (10) statement -> WRITE LPAREN expression . RPAREN
+    (12) expression -> expression . ADDOP term
 
-    MULOP           reduce using rule 17 (factor -> LPAREN expression RPAREN .)
-    CMP             reduce using rule 17 (factor -> LPAREN expression RPAREN .)
-    ADDOP           reduce using rule 17 (factor -> LPAREN expression RPAREN .)
-    SEMICOLON       reduce using rule 17 (factor -> LPAREN expression RPAREN .)
-    RPAREN          reduce using rule 17 (factor -> LPAREN expression RPAREN .)
-    THEN            reduce using rule 17 (factor -> LPAREN expression RPAREN .)
-    DO              reduce using rule 17 (factor -> LPAREN expression RPAREN .)
+    RPAREN          shift and go to state 45
+    ADDOP           shift and go to state 31
 
 
 state 37
 
-    (8) statement -> WHILE relation DO statementList . OD
+    (6) statement -> TYPE IDENTIFIER ASSIGN expression .
+    (12) expression -> expression . ADDOP term
 
-    OD              shift and go to state 41
+    SEMICOLON       reduce using rule 6 (statement -> TYPE IDENTIFIER ASSIGN expression .)
+    ADDOP           shift and go to state 31
 
 
 state 38
 
-    (9) statement -> WRITE LPAREN expression RPAREN .
+    (7) statement -> IF relation THEN statementList . FI
+    (8) statement -> IF relation THEN statementList . ELSE statementList FI
 
-    SEMICOLON       reduce using rule 9 (statement -> WRITE LPAREN expression RPAREN .)
+    FI              shift and go to state 46
+    ELSE            shift and go to state 47
 
 
 state 39
 
-    (6) statement -> IF relation THEN statementList FI .
+    (22) relation -> expression CMP expression .
+    (12) expression -> expression . ADDOP term
 
-    SEMICOLON       reduce using rule 6 (statement -> IF relation THEN statementList FI .)
+    THEN            reduce using rule 22 (relation -> expression CMP expression .)
+    DO              reduce using rule 22 (relation -> expression CMP expression .)
+    ADDOP           shift and go to state 31
 
 
 state 40
 
-    (7) statement -> IF relation THEN statementList ELSE . statementList FI
-    (3) statementList -> . statement SEMICOLON statementList
-    (4) statementList -> . empty
-    (5) statement -> . IDENTIFIER ASSIGN expression
-    (6) statement -> . IF relation THEN statementList FI
-    (7) statement -> . IF relation THEN statementList ELSE statementList FI
-    (8) statement -> . WHILE relation DO statementList OD
-    (9) statement -> . WRITE LPAREN expression RPAREN
-    (2) empty -> .
+    (12) expression -> expression ADDOP term .
 
-    IDENTIFIER      shift and go to state 6
-    IF              shift and go to state 7
-    WHILE           shift and go to state 8
-    WRITE           shift and go to state 9
-    FI              reduce using rule 2 (empty -> .)
+    CMP             reduce using rule 12 (expression -> expression ADDOP term .)
+    ADDOP           reduce using rule 12 (expression -> expression ADDOP term .)
+    SEMICOLON       reduce using rule 12 (expression -> expression ADDOP term .)
+    RPAREN          reduce using rule 12 (expression -> expression ADDOP term .)
+    THEN            reduce using rule 12 (expression -> expression ADDOP term .)
+    DO              reduce using rule 12 (expression -> expression ADDOP term .)
 
-    statementList                  shift and go to state 42
-    statement                      shift and go to state 4
-    empty                          shift and go to state 5
 
 state 41
 
-    (8) statement -> WHILE relation DO statementList OD .
+    (14) term -> factor MULOP factor .
 
-    SEMICOLON       reduce using rule 8 (statement -> WHILE relation DO statementList OD .)
+    CMP             reduce using rule 14 (term -> factor MULOP factor .)
+    ADDOP           reduce using rule 14 (term -> factor MULOP factor .)
+    SEMICOLON       reduce using rule 14 (term -> factor MULOP factor .)
+    RPAREN          reduce using rule 14 (term -> factor MULOP factor .)
+    THEN            reduce using rule 14 (term -> factor MULOP factor .)
+    DO              reduce using rule 14 (term -> factor MULOP factor .)
 
 
 state 42
 
-    (7) statement -> IF relation THEN statementList ELSE statementList . FI
+    (16) factor -> LPAREN TYPE RPAREN . IDENTIFIER
+    (21) factor -> LPAREN TYPE RPAREN . LPAREN expression RPAREN
 
-    FI              shift and go to state 43
+    IDENTIFIER      shift and go to state 49
+    LPAREN          shift and go to state 48
 
 
 state 43
 
-    (7) statement -> IF relation THEN statementList ELSE statementList FI .
+    (20) factor -> LPAREN expression RPAREN .
 
-    SEMICOLON       reduce using rule 7 (statement -> IF relation THEN statementList ELSE statementList FI .)
+    MULOP           reduce using rule 20 (factor -> LPAREN expression RPAREN .)
+    CMP             reduce using rule 20 (factor -> LPAREN expression RPAREN .)
+    ADDOP           reduce using rule 20 (factor -> LPAREN expression RPAREN .)
+    SEMICOLON       reduce using rule 20 (factor -> LPAREN expression RPAREN .)
+    RPAREN          reduce using rule 20 (factor -> LPAREN expression RPAREN .)
+    THEN            reduce using rule 20 (factor -> LPAREN expression RPAREN .)
+    DO              reduce using rule 20 (factor -> LPAREN expression RPAREN .)
+
+
+state 44
+
+    (9) statement -> WHILE relation DO statementList . OD
+
+    OD              shift and go to state 50
+
+
+state 45
+
+    (10) statement -> WRITE LPAREN expression RPAREN .
+
+    SEMICOLON       reduce using rule 10 (statement -> WRITE LPAREN expression RPAREN .)
+
+
+state 46
+
+    (7) statement -> IF relation THEN statementList FI .
+
+    SEMICOLON       reduce using rule 7 (statement -> IF relation THEN statementList FI .)
+
+
+state 47
+
+    (8) statement -> IF relation THEN statementList ELSE . statementList FI
+    (3) statementList -> . statement SEMICOLON statementList
+    (4) statementList -> . empty
+    (5) statement -> . IDENTIFIER ASSIGN expression
+    (6) statement -> . TYPE IDENTIFIER ASSIGN expression
+    (7) statement -> . IF relation THEN statementList FI
+    (8) statement -> . IF relation THEN statementList ELSE statementList FI
+    (9) statement -> . WHILE relation DO statementList OD
+    (10) statement -> . WRITE LPAREN expression RPAREN
+    (2) empty -> .
+
+    IDENTIFIER      shift and go to state 6
+    TYPE            shift and go to state 7
+    IF              shift and go to state 8
+    WHILE           shift and go to state 9
+    WRITE           shift and go to state 10
+    FI              reduce using rule 2 (empty -> .)
+
+    statementList                  shift and go to state 51
+    statement                      shift and go to state 4
+    empty                          shift and go to state 5
+
+state 48
+
+    (21) factor -> LPAREN TYPE RPAREN LPAREN . expression RPAREN
+    (11) expression -> . term
+    (12) expression -> . expression ADDOP term
+    (13) term -> . factor
+    (14) term -> . factor MULOP factor
+    (15) factor -> . IDENTIFIER
+    (16) factor -> . LPAREN TYPE RPAREN IDENTIFIER
+    (17) factor -> . NUMBER_INT
+    (18) factor -> . NUMBER_FLOAT
+    (19) factor -> . READ
+    (20) factor -> . LPAREN expression RPAREN
+    (21) factor -> . LPAREN TYPE RPAREN LPAREN expression RPAREN
+
+    IDENTIFIER      shift and go to state 19
+    LPAREN          shift and go to state 20
+    NUMBER_INT      shift and go to state 21
+    NUMBER_FLOAT    shift and go to state 22
+    READ            shift and go to state 23
+
+    expression                     shift and go to state 52
+    term                           shift and go to state 17
+    factor                         shift and go to state 18
+
+state 49
+
+    (16) factor -> LPAREN TYPE RPAREN IDENTIFIER .
+
+    MULOP           reduce using rule 16 (factor -> LPAREN TYPE RPAREN IDENTIFIER .)
+    CMP             reduce using rule 16 (factor -> LPAREN TYPE RPAREN IDENTIFIER .)
+    ADDOP           reduce using rule 16 (factor -> LPAREN TYPE RPAREN IDENTIFIER .)
+    SEMICOLON       reduce using rule 16 (factor -> LPAREN TYPE RPAREN IDENTIFIER .)
+    RPAREN          reduce using rule 16 (factor -> LPAREN TYPE RPAREN IDENTIFIER .)
+    THEN            reduce using rule 16 (factor -> LPAREN TYPE RPAREN IDENTIFIER .)
+    DO              reduce using rule 16 (factor -> LPAREN TYPE RPAREN IDENTIFIER .)
+
+
+state 50
+
+    (9) statement -> WHILE relation DO statementList OD .
+
+    SEMICOLON       reduce using rule 9 (statement -> WHILE relation DO statementList OD .)
+
+
+state 51
+
+    (8) statement -> IF relation THEN statementList ELSE statementList . FI
+
+    FI              shift and go to state 53
+
+
+state 52
+
+    (21) factor -> LPAREN TYPE RPAREN LPAREN expression . RPAREN
+    (12) expression -> expression . ADDOP term
+
+    RPAREN          shift and go to state 54
+    ADDOP           shift and go to state 31
+
+
+state 53
+
+    (8) statement -> IF relation THEN statementList ELSE statementList FI .
+
+    SEMICOLON       reduce using rule 8 (statement -> IF relation THEN statementList ELSE statementList FI .)
+
+
+state 54
+
+    (21) factor -> LPAREN TYPE RPAREN LPAREN expression RPAREN .
+
+    MULOP           reduce using rule 21 (factor -> LPAREN TYPE RPAREN LPAREN expression RPAREN .)
+    CMP             reduce using rule 21 (factor -> LPAREN TYPE RPAREN LPAREN expression RPAREN .)
+    ADDOP           reduce using rule 21 (factor -> LPAREN TYPE RPAREN LPAREN expression RPAREN .)
+    SEMICOLON       reduce using rule 21 (factor -> LPAREN TYPE RPAREN LPAREN expression RPAREN .)
+    RPAREN          reduce using rule 21 (factor -> LPAREN TYPE RPAREN LPAREN expression RPAREN .)
+    THEN            reduce using rule 21 (factor -> LPAREN TYPE RPAREN LPAREN expression RPAREN .)
+    DO              reduce using rule 21 (factor -> LPAREN TYPE RPAREN LPAREN expression RPAREN .)
 

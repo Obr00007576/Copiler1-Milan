@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'ADDOP ASSIGN BEGIN CMP DO ELSE END FI IDENTIFIER IF LPAREN MULOP NUMBER OD READ RPAREN SEMICOLON THEN WHILE WRITEprogram : BEGIN statementList ENDempty :statementList : statement SEMICOLON statementList\n                     | empty\n    statement : IDENTIFIER ASSIGN expression\n                 | IF relation THEN statementList FI\n                 | IF relation THEN statementList ELSE statementList FI\n                 | WHILE relation DO statementList OD\n                 | WRITE LPAREN expression RPAREN\n    expression : term\n                  | expression ADDOP term\n    term : factor\n            | factor MULOP factor\n    factor : IDENTIFIER\n              | NUMBER\n              | READ\n              | LPAREN expression RPAREN\n    relation : expression CMP expression'
+_lr_signature = 'ADDOP ASSIGN BEGIN CMP COMMA DO ELSE END FI IDENTIFIER IF LPAREN MULOP NUMBER_FLOAT NUMBER_INT OD READ RPAREN SEMICOLON THEN TYPE WHILE WRITEprogram : BEGIN statementList ENDempty :statementList : statement SEMICOLON statementList\n                     | empty\n    statement : IDENTIFIER ASSIGN expression\n                 | TYPE IDENTIFIER ASSIGN expression\n                 | IF relation THEN statementList FI\n                 | IF relation THEN statementList ELSE statementList FI\n                 | WHILE relation DO statementList OD\n                 | WRITE LPAREN expression RPAREN\n    expression : term\n                  | expression ADDOP term\n    term : factor\n            | factor MULOP factor\n    factor : IDENTIFIER\n              | LPAREN TYPE RPAREN IDENTIFIER\n              | NUMBER_INT\n              | NUMBER_FLOAT\n              | READ\n              | LPAREN expression RPAREN\n              | LPAREN TYPE RPAREN LPAREN expression RPAREN\n    relation : expression CMP expression'
     
-_lr_action_items = {'BEGIN':([0,],[2,]),'$end':([1,10,],[0,-1,]),'IDENTIFIER':([2,7,8,11,12,20,22,25,26,27,28,30,40,],[6,17,17,6,17,17,17,6,17,17,17,6,6,]),'IF':([2,11,25,30,40,],[7,7,7,7,7,]),'WHILE':([2,11,25,30,40,],[8,8,8,8,8,]),'WRITE':([2,11,25,30,40,],[9,9,9,9,9,]),'END':([2,3,5,11,23,],[-2,10,-4,-2,-3,]),'SEMICOLON':([4,15,16,17,18,19,24,34,35,36,38,39,41,43,],[11,-10,-12,-14,-15,-16,-5,-11,-13,-17,-9,-6,-8,-7,]),'FI':([5,11,23,25,32,40,42,],[-4,-2,-3,-2,39,-2,43,]),'ELSE':([5,11,23,25,32,],[-4,-2,-3,-2,40,]),'OD':([5,11,23,30,37,],[-4,-2,-3,-2,41,]),'ASSIGN':([6,],[12,]),'NUMBER':([7,8,12,20,22,26,27,28,],[18,18,18,18,18,18,18,18,]),'READ':([7,8,12,20,22,26,27,28,],[19,19,19,19,19,19,19,19,]),'LPAREN':([7,8,9,12,20,22,26,27,28,],[20,20,22,20,20,20,20,20,20,]),'THEN':([13,15,16,17,18,19,33,34,35,36,],[25,-10,-12,-14,-15,-16,-18,-11,-13,-17,]),'CMP':([14,15,16,17,18,19,34,35,36,],[26,-10,-12,-14,-15,-16,-11,-13,-17,]),'ADDOP':([14,15,16,17,18,19,24,29,31,33,34,35,36,],[27,-10,-12,-14,-15,-16,27,27,27,27,-11,-13,-17,]),'RPAREN':([15,16,17,18,19,29,31,34,35,36,],[-10,-12,-14,-15,-16,36,38,-11,-13,-17,]),'DO':([15,16,17,18,19,21,33,34,35,36,],[-10,-12,-14,-15,-16,30,-18,-11,-13,-17,]),'MULOP':([16,17,18,19,36,],[28,-14,-15,-16,-17,]),}
+_lr_action_items = {'BEGIN':([0,],[2,]),'$end':([1,11,],[0,-1,]),'IDENTIFIER':([2,7,8,9,12,13,20,25,28,29,30,31,32,35,42,47,48,],[6,14,19,19,6,19,19,19,19,6,19,19,19,6,49,6,19,]),'TYPE':([2,12,20,29,35,47,],[7,7,33,7,7,7,]),'IF':([2,12,29,35,47,],[8,8,8,8,8,]),'WHILE':([2,12,29,35,47,],[9,9,9,9,9,]),'WRITE':([2,12,29,35,47,],[10,10,10,10,10,]),'END':([2,3,5,12,26,],[-2,11,-4,-2,-3,]),'SEMICOLON':([4,17,18,19,21,22,23,27,37,40,41,43,45,46,49,50,53,54,],[12,-11,-13,-15,-17,-18,-19,-5,-6,-12,-14,-20,-10,-7,-16,-9,-8,-21,]),'FI':([5,12,26,29,38,47,51,],[-4,-2,-3,-2,46,-2,53,]),'ELSE':([5,12,26,29,38,],[-4,-2,-3,-2,47,]),'OD':([5,12,26,35,44,],[-4,-2,-3,-2,50,]),'ASSIGN':([6,14,],[13,28,]),'LPAREN':([8,9,10,13,20,25,28,30,31,32,42,48,],[20,20,25,20,20,20,20,20,20,20,48,20,]),'NUMBER_INT':([8,9,13,20,25,28,30,31,32,48,],[21,21,21,21,21,21,21,21,21,21,]),'NUMBER_FLOAT':([8,9,13,20,25,28,30,31,32,48,],[22,22,22,22,22,22,22,22,22,22,]),'READ':([8,9,13,20,25,28,30,31,32,48,],[23,23,23,23,23,23,23,23,23,23,]),'THEN':([15,17,18,19,21,22,23,39,40,41,43,49,54,],[29,-11,-13,-15,-17,-18,-19,-22,-12,-14,-20,-16,-21,]),'CMP':([16,17,18,19,21,22,23,40,41,43,49,54,],[30,-11,-13,-15,-17,-18,-19,-12,-14,-20,-16,-21,]),'ADDOP':([16,17,18,19,21,22,23,27,34,36,37,39,40,41,43,49,52,54,],[31,-11,-13,-15,-17,-18,-19,31,31,31,31,31,-12,-14,-20,-16,31,-21,]),'RPAREN':([17,18,19,21,22,23,33,34,36,40,41,43,49,52,54,],[-11,-13,-15,-17,-18,-19,42,43,45,-12,-14,-20,-16,54,-21,]),'DO':([17,18,19,21,22,23,24,39,40,41,43,49,54,],[-11,-13,-15,-17,-18,-19,35,-22,-12,-14,-20,-16,-21,]),'MULOP':([18,19,21,22,23,43,49,54,],[32,-15,-17,-18,-19,-20,-16,-21,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'program':([0,],[1,]),'statementList':([2,11,25,30,40,],[3,23,32,37,42,]),'statement':([2,11,25,30,40,],[4,4,4,4,4,]),'empty':([2,11,25,30,40,],[5,5,5,5,5,]),'relation':([7,8,],[13,21,]),'expression':([7,8,12,20,22,26,],[14,14,24,29,31,33,]),'term':([7,8,12,20,22,26,27,],[15,15,15,15,15,15,34,]),'factor':([7,8,12,20,22,26,27,28,],[16,16,16,16,16,16,16,35,]),}
+_lr_goto_items = {'program':([0,],[1,]),'statementList':([2,12,29,35,47,],[3,26,38,44,51,]),'statement':([2,12,29,35,47,],[4,4,4,4,4,]),'empty':([2,12,29,35,47,],[5,5,5,5,5,]),'relation':([8,9,],[15,24,]),'expression':([8,9,13,20,25,28,30,48,],[16,16,27,34,36,37,39,52,]),'term':([8,9,13,20,25,28,30,31,48,],[17,17,17,17,17,17,17,40,17,]),'factor':([8,9,13,20,25,28,30,31,32,48,],[18,18,18,18,18,18,18,18,41,18,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,22 +27,26 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> program","S'",1,None,None,None),
-  ('program -> BEGIN statementList END','program',3,'p_program','parser.py',10),
-  ('empty -> <empty>','empty',0,'p_empty','parser.py',16),
-  ('statementList -> statement SEMICOLON statementList','statementList',3,'p_statementList','parser.py',20),
-  ('statementList -> empty','statementList',1,'p_statementList','parser.py',21),
+  ('program -> BEGIN statementList END','program',3,'p_program','parser.py',7),
+  ('empty -> <empty>','empty',0,'p_empty','parser.py',13),
+  ('statementList -> statement SEMICOLON statementList','statementList',3,'p_statementList','parser.py',17),
+  ('statementList -> empty','statementList',1,'p_statementList','parser.py',18),
   ('statement -> IDENTIFIER ASSIGN expression','statement',3,'p_statement','parser.py',26),
-  ('statement -> IF relation THEN statementList FI','statement',5,'p_statement','parser.py',27),
-  ('statement -> IF relation THEN statementList ELSE statementList FI','statement',7,'p_statement','parser.py',28),
-  ('statement -> WHILE relation DO statementList OD','statement',5,'p_statement','parser.py',29),
-  ('statement -> WRITE LPAREN expression RPAREN','statement',4,'p_statement','parser.py',30),
-  ('expression -> term','expression',1,'p_expression','parser.py',38),
-  ('expression -> expression ADDOP term','expression',3,'p_expression','parser.py',39),
-  ('term -> factor','term',1,'p_term','parser.py',44),
-  ('term -> factor MULOP factor','term',3,'p_term','parser.py',45),
-  ('factor -> IDENTIFIER','factor',1,'p_factor','parser.py',50),
-  ('factor -> NUMBER','factor',1,'p_factor','parser.py',51),
-  ('factor -> READ','factor',1,'p_factor','parser.py',52),
-  ('factor -> LPAREN expression RPAREN','factor',3,'p_factor','parser.py',53),
-  ('relation -> expression CMP expression','relation',3,'p_relation','parser.py',58),
+  ('statement -> TYPE IDENTIFIER ASSIGN expression','statement',4,'p_statement','parser.py',27),
+  ('statement -> IF relation THEN statementList FI','statement',5,'p_statement','parser.py',28),
+  ('statement -> IF relation THEN statementList ELSE statementList FI','statement',7,'p_statement','parser.py',29),
+  ('statement -> WHILE relation DO statementList OD','statement',5,'p_statement','parser.py',30),
+  ('statement -> WRITE LPAREN expression RPAREN','statement',4,'p_statement','parser.py',31),
+  ('expression -> term','expression',1,'p_expression','parser.py',60),
+  ('expression -> expression ADDOP term','expression',3,'p_expression','parser.py',61),
+  ('term -> factor','term',1,'p_term','parser.py',92),
+  ('term -> factor MULOP factor','term',3,'p_term','parser.py',93),
+  ('factor -> IDENTIFIER','factor',1,'p_factor','parser.py',124),
+  ('factor -> LPAREN TYPE RPAREN IDENTIFIER','factor',4,'p_factor','parser.py',125),
+  ('factor -> NUMBER_INT','factor',1,'p_factor','parser.py',126),
+  ('factor -> NUMBER_FLOAT','factor',1,'p_factor','parser.py',127),
+  ('factor -> READ','factor',1,'p_factor','parser.py',128),
+  ('factor -> LPAREN expression RPAREN','factor',3,'p_factor','parser.py',129),
+  ('factor -> LPAREN TYPE RPAREN LPAREN expression RPAREN','factor',6,'p_factor','parser.py',130),
+  ('relation -> expression CMP expression','relation',3,'p_relation','parser.py',171),
 ]

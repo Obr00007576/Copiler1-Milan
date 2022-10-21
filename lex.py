@@ -2,7 +2,8 @@ from ply import lex
 
 tokens = (
     'IDENTIFIER', 
-    'NUMBER', 
+    'NUMBER_INT',
+    'NUMBER_FLOAT', 
     'BEGIN', 
     'END', 
     'IF', 
@@ -20,7 +21,9 @@ tokens = (
     'CMP', 
     'LPAREN', 
     'RPAREN', 
-    'SEMICOLON'
+    'SEMICOLON',
+    'TYPE',
+    'COMMA'
 )
 
 reserved = {
@@ -34,7 +37,9 @@ reserved = {
     'do': 'DO',
     'od': 'OD',
     'write': 'WRITE',
-    'read': 'READ'
+    'read': 'READ',
+    'float': 'TYPE',
+    'int': 'TYPE'
 }
 
 t_ignore = ' \t'
@@ -42,37 +47,38 @@ t_ASSIGN = r':='
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_SEMICOLON = r';'
+t_COMMA = r','
 
 def t_MULOP(t):
     r'\*|/'
-    if t.value=='*':
-        t.value='A_MULTIPLY'
-    elif t.value=='/':
-        t.value='A_DIVIDE'
+    if t.value == '*':
+        t.value = 'A_MULTIPLY'
+    elif t.value == '/':
+        t.value = 'A_DIVIDE'
     return t
 
 def t_ADDOP(t):
     r'\+|-'
-    if t.value=='+':
-        t.value='A_PLUS'
-    elif t.value=='-':
-        t.value='A_MINUS'
+    if t.value == '+':
+        t.value = 'A_PLUS'
+    elif t.value == '-':
+        t.value = 'A_MINUS'
     return t
 
 def t_CMP(t):
     r'=|(!=)|(<=)|<|>=|>'
-    if t.value=='=':
-        t.value='C_EQ'
-    elif t.value=='!=':
-        t.value='C_NE'
-    elif t.value=='<=':
-        t.value='C_LE'
-    elif t.value=='<':
-        t.value='C_LT'
-    elif t.value=='>=':
-        t.value='C_GE'
-    elif t.value=='>':
-        t.value='C_GT'
+    if t.value == '=':
+        t.value = 'C_EQ'
+    elif t.value == '!=':
+        t.value = 'C_NE'
+    elif t.value == '<=':
+        t.value = 'C_LE'
+    elif t.value == '<':
+        t.value = 'C_LT'
+    elif t.value == '>=':
+        t.value = 'C_GE'
+    elif t.value == '>':
+        t.value = 'C_GT'
     return t
 
 def t_IDENTIFIER(t):
@@ -82,10 +88,16 @@ def t_IDENTIFIER(t):
         return t
     return t
 
-def t_NUMBER(t):
+def t_NUMBER_FLOAT(t):
+    r'\d+\.\d*'
+    t.value = float(t.value)    
+    return t
+
+def t_NUMBER_INT(t):
     r'\d+'
     t.value = int(t.value)    
     return t
+
 
 def t_error(t):
     print(f'Illegal character {t.value[0]!r}')

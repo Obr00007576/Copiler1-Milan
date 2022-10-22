@@ -85,6 +85,10 @@ class PMachine:
             elif(de[0] == 'OUT'):
                 print(self.pop())
                 pass
+            elif(de[0] == 'ITOF'):
+                self.stack[-1]=float(self.stack[-1])
+            elif(de[0] == 'FTOI'):
+                self.stack[-1]=int(self.stack[-1])
             elif(de[0] == 'STOP'):
                 break
             self.cp+=1
@@ -94,18 +98,23 @@ class PMachine:
 if __name__=='__main__':
     ma=PMachine()
     data = '''begin
-        a:=3.5;
-        int b := a+(int)(a+3.4);
+        float a,b := (int)((float)((int)(3.4+3)));
+        int c := a+(int)(a+3+3.4);
+        write(a);
+        write(b);
+        write(c);
+        d:=1;
+        while d+1.2 = 1.  do
+        od;
     end
     '''
     p_code,mem = parser.parse(data)
     print(mem)
-
     for da in mem.keys():
         if type(da) is int:
             ma.push(da)
         elif type(da) is float:
-            ma.push(0.)
+            ma.push(da)
         else:
             if mem[da][0]=='INT':
                 ma.push(0)
@@ -117,5 +126,5 @@ if __name__=='__main__':
         ma.push(p_code[i])
     ma.dp=len(ma.stack)
 
-    
-    
+    print("\n Machine out:")
+    ma.run()

@@ -66,7 +66,7 @@ def t_ADDOP(t):
     return t
 
 def t_CMP(t):
-    r'=|(!=)|(<=)|<|>=|>'
+    r'=|(!=)|(<=)|<|(>=)|>'
     if t.value == '=':
         t.value = 'C_EQ'
     elif t.value == '!=':

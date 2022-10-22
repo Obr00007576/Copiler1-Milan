@@ -24,7 +24,9 @@ def p_statementList(p):
 
 def p_statement(p):
     '''statement : IDENTIFIER ASSIGN expression
+                 | IDENTIFIERS ASSIGN expression
                  | TYPE IDENTIFIER ASSIGN expression
+                 | TYPE IDENTIFIERS ASSIGN expression
                  | IF relation THEN statementList FI
                  | IF relation THEN statementList ELSE statementList FI
                  | WHILE relation DO statementList OD
@@ -33,23 +35,58 @@ def p_statement(p):
     global mem_tab
     p[0]=[]
     if p[2]==':=':
-        if p[3][-1]=='i':
-            mem_tab[p[1]][0]='INT'
-        elif p[3][-1]=='f':
-            mem_tab[p[1]][0]='FLOAT'
-        mem_address = mem_tab[p[1]][1]
-        p[0]=p[3][0:-1]+[f"STORE {mem_address}"]
+        if type(p[1]) is str:
+            if p[3][-1]=='i':
+                mem_tab[p[1]][0]='INT'
+            elif p[3][-1]=='f':
+                mem_tab[p[1]][0]='FLOAT'
+            mem_address = mem_tab[p[1]][1]
+            p[0]=p[3][0:-1]+[f"STORE {mem_address}"]
+        else:
+            p[0]=p[3][0:-1]
+            for n in range(len(p[1])):
+                vn = p[1][n]
+                if p[3][-1]=='i':
+                    mem_tab[vn][0]='INT'
+                elif p[3][-1]=='f':
+                    mem_tab[vn][0]='FLOAT'
+                mem_address = mem_tab[vn][1]
+                if n<len(p[1])-1:
+                    p[0]+=[f"STORE {mem_address}", f"LOAD {mem_address}"]
+                else:
+                    p[0]+=[f"STORE {mem_address}"]
     if p[3]==':=':
-        mem_address = mem_tab[p[2]][1]
-        mem_tab[p[2]][0]=p[1].upper()
-        if p[1]=='int' and p[4][-1]=='i':
-            p[0]=p[4][0:-1]+[f"STORE {mem_address}"]
-        elif p[1]=='float' and p[4][-1]=='i':
-            p[0]=p[4][0:-1]+['ITOF']+[f"STORE {mem_address}"]
-        elif p[1]=='int' and p[4][-1]=='f':
-            p[0]=p[4][0:-1]+['FTOI']+[f"STORE {mem_address}"]
-        elif p[1]=='float' and p[4][-1]=='f':
-            p[0]=p[4][0:-1]+[f"STORE {mem_address}"]
+        if type(p[2]) is str:
+            mem_address = mem_tab[p[2]][1]
+            mem_tab[p[2]][0]=p[1].upper()
+            if p[1]=='int' and p[4][-1]=='i':
+                p[0]=p[4][0:-1]+[f"STORE {mem_address}"]
+            elif p[1]=='float' and p[4][-1]=='i':
+                p[0]=p[4][0:-1]+['ITOF']+[f"STORE {mem_address}"]
+            elif p[1]=='int' and p[4][-1]=='f':
+                p[0]=p[4][0:-1]+['FTOI']+[f"STORE {mem_address}"]
+            elif p[1]=='float' and p[4][-1]=='f':
+                p[0]=p[4][0:-1]+[f"STORE {mem_address}"]
+        else:
+            mem_address = mem_tab[p[2][0]][1]
+            mem_tab[p[2][0]][0]=p[1].upper()
+            if p[1]=='int' and p[4][-1]=='i':
+                p[0]=p[4][0:-1]+[f"STORE {mem_address}"]
+            elif p[1]=='float' and p[4][-1]=='i':
+                p[0]=p[4][0:-1]+['ITOF']+[f"STORE {mem_address}"]
+            elif p[1]=='int' and p[4][-1]=='f':
+                p[0]=p[4][0:-1]+['FTOI']+[f"STORE {mem_address}"]
+            elif p[1]=='float' and p[4][-1]=='f':
+                p[0]=p[4][0:-1]+[f"STORE {mem_address}"]
+            p[0]+=[f"LOAD {mem_address}"]
+            for n in range(1, len(p[2])):
+                vn = p[2][n]
+                mem_address = mem_tab[vn][1]
+                mem_tab[vn][0]=p[1].upper()
+                if n<len(p[2])-1:
+                    p[0] += [f"STORE {mem_address}", f"LOAD {mem_address}"]
+                else:
+                    p[0] += [f"STORE {mem_address}"]
     if p[1]=='write':
         p[0]=p[3][0:-1]+['OUT']
     if p[1]=='if':
@@ -60,6 +97,14 @@ def p_statement(p):
     if p[1]=='while':
         p[0]=p[2]+[f"JMP_NO {len(p[4])+2}"]+p[4]+[f"JMP {-1-len(p[2])-len(p[4])}"]
 
+def p_identifiers(p):
+    '''IDENTIFIERS : IDENTIFIER COMMA IDENTIFIERS
+                   | IDENTIFIER
+    '''
+    if len(p)==4:
+        p[0]=[p[1]]+p[3]
+    else:
+        p[0]=[p[1]]
 def p_expression(p):
     '''expression : term
                   | expression ADDOP term
@@ -172,18 +217,26 @@ def p_factor(p):
 
 def p_relation(p):
     'relation : expression CMP expression'
+    if p[1][-1]=='i' and p[3][-1]=='i':
+        p[0] = p[1][0:-1]+p[3][0:-1]
+    elif p[1][-1]=='f' and p[3][-1]=='i':
+        p[0] = p[1][0:-1]+p[3][0:-1]+['ITOF']
+    elif p[1][-1]=='f' and p[3][-1]=='f':
+        p[0] = p[1][0:-1]+p[3][0:-1]
+    elif p[1][-1]=='i' and p[3][-1]=='f':
+        p[0] = p[1][0:-1]+['ITOF']+p[3][0:-1]
     if p[2] == 'C_EQ':
-        p[0] = p[1][0:-1]+p[3][0:-1]+['CMP 0']
+        p[0] += ['CMP 0']
     elif p[2] == 'C_LT':
-        p[0] = p[1][0:-1]+p[3][0:-1]+['CMP 1']
+        p[0] += ['CMP 1']
     elif p[2] == 'C_LE':
-        p[0] = p[1][0:-1]+p[3][0:-1]+['CMP 2']
+        p[0] += ['CMP 2']
     elif p[2] == 'C_GT':
-        p[0] = p[1][0:-1]+p[3][0:-1]+['CMP 3']
+        p[0] += ['CMP 3']
     elif p[2] == 'C_GE':
-        p[0] = p[1][0:-1]+p[3][0:-1]+['CMP 4']
+        p[0] += ['CMP 4']
     elif p[2] == 'C_NE':
-        p[0] = p[1][0:-1]+p[3][0:-1]+['CMP 5']
+        p[0] += ['CMP 5']
 
 parser = yacc.yacc(debug=True)
 

@@ -1,0 +1,23 @@
+begin
+    float a,b := (int)((float)((int)(3.4+3)));
+    int c := a+(int)(a+3+3.4);
+    write(a);
+    write(b);
+    write(c);
+    d:=1;
+    f:=34.5;
+    while d+1.2 = 1.  do
+        d:=d+1;
+    od;
+    while f<=40 do
+        f := f*1.1;
+        write(f);
+        if f<40 then
+            write(f/2);
+            write((int)(f/2));
+        else
+            write(f*3.);
+        fi;
+    od;
+    write(f);
+end

@@ -1,4 +1,5 @@
 import parser
+import sys
 class PMachine:
     stack=[]
     cp=0
@@ -10,6 +11,7 @@ class PMachine:
         del self.stack[-1]
         return t
     def run(self):
+        print("\n-----------CODE BEGIN-----------")
         while True:
             pc=self.stack[self.cp]
             de=pc.split()
@@ -80,7 +82,10 @@ class PMachine:
             elif(de[0] == 'DIV'):
                 b=self.pop()
                 a=self.pop()
-                self.push(a//b)
+                if type(a) is int:
+                    self.push(a//b)
+                elif type(a) is float:
+                    self.push(a/b)
                 pass
             elif(de[0] == 'OUT'):
                 print(self.pop())
@@ -92,39 +97,36 @@ class PMachine:
             elif(de[0] == 'STOP'):
                 break
             self.cp+=1
+        print("-----------CODE END-----------\n")
+    def pre_compile(self, code):
+        p_code,mem = parser.parse(code)
+        print('-----------MEMORY TABLE-----------')
+        for k in mem.keys():
+            if type(k) is int or type(k) is float:
+                print(f"{mem[k][1]}: \tCONST_VAL: {k}, TYPE: {mem[k][0]}")
+            else:
+                print(f"{mem[k][1]}: \tVAR_NAME: {k}, TYPE: {mem[k][0]}")
+        for da in mem.keys():
+            if type(da) is int:
+                self.push(da)
+            elif type(da) is float:
+                self.push(da)
+            else:
+                if mem[da][0]=='INT':
+                    self.push(0)
+                elif mem[da][0]=='FLOAT':
+                    self.push(0.)
+        self.cp=len(self.stack)
+        print('\n-----------P_CODE-----------')
+        for i in range(len(p_code)):
+            print(f"{i}: \t{p_code[i]}")
+            self.push(p_code[i])
+        self.dp=len(self.stack)
             
 
 
 if __name__=='__main__':
-    ma=PMachine()
-    data = '''begin
-        float a,b := (int)((float)((int)(3.4+3)));
-        int c := a+(int)(a+3+3.4);
-        write(a);
-        write(b);
-        write(c);
-        d:=1;
-        while d+1.2 = 1.  do
-        od;
-    end
-    '''
-    p_code,mem = parser.parse(data)
-    print(mem)
-    for da in mem.keys():
-        if type(da) is int:
-            ma.push(da)
-        elif type(da) is float:
-            ma.push(da)
-        else:
-            if mem[da][0]=='INT':
-                ma.push(0)
-            elif mem[da][0]=='FLOAT':
-                ma.push(0.)
-    ma.cp=len(ma.stack)
-    for i in range(len(p_code)):
-        print(f"{i}: {p_code[i]}")
-        ma.push(p_code[i])
-    ma.dp=len(ma.stack)
-
-    print("\n Machine out:")
+    ma = PMachine()
+    code = open(sys.argv[1], 'r').read()
+    ma.pre_compile(code)
     ma.run()

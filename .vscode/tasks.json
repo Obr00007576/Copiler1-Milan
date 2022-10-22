@@ -9,6 +9,11 @@
             "command": "python p_machine.py ${file}",
             "options": {
                 "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
             }
         }
     ]

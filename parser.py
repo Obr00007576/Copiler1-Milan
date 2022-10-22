@@ -41,9 +41,9 @@ def p_statement(p):
             elif p[3][-1]=='f':
                 mem_tab[p[1]][0]='FLOAT'
             mem_address = mem_tab[p[1]][1]
-            p[0]=p[3][0:-1]+[f"STORE {mem_address}"]
+            p[0]=p[3][:-1]+[f"STORE {mem_address}"]
         else:
-            p[0]=p[3][0:-1]
+            p[0]=p[3][:-1]
             for n in range(len(p[1])):
                 vn = p[1][n]
                 if p[3][-1]=='i':
@@ -60,24 +60,24 @@ def p_statement(p):
             mem_address = mem_tab[p[2]][1]
             mem_tab[p[2]][0]=p[1].upper()
             if p[1]=='int' and p[4][-1]=='i':
-                p[0]=p[4][0:-1]+[f"STORE {mem_address}"]
+                p[0]=p[4][:-1]+[f"STORE {mem_address}"]
             elif p[1]=='float' and p[4][-1]=='i':
-                p[0]=p[4][0:-1]+['ITOF']+[f"STORE {mem_address}"]
+                p[0]=p[4][:-1]+['ITOF']+[f"STORE {mem_address}"]
             elif p[1]=='int' and p[4][-1]=='f':
-                p[0]=p[4][0:-1]+['FTOI']+[f"STORE {mem_address}"]
+                p[0]=p[4][:-1]+['FTOI']+[f"STORE {mem_address}"]
             elif p[1]=='float' and p[4][-1]=='f':
-                p[0]=p[4][0:-1]+[f"STORE {mem_address}"]
+                p[0]=p[4][:-1]+[f"STORE {mem_address}"]
         else:
             mem_address = mem_tab[p[2][0]][1]
             mem_tab[p[2][0]][0]=p[1].upper()
             if p[1]=='int' and p[4][-1]=='i':
-                p[0]=p[4][0:-1]+[f"STORE {mem_address}"]
+                p[0]=p[4][:-1]+[f"STORE {mem_address}"]
             elif p[1]=='float' and p[4][-1]=='i':
-                p[0]=p[4][0:-1]+['ITOF']+[f"STORE {mem_address}"]
+                p[0]=p[4][:-1]+['ITOF']+[f"STORE {mem_address}"]
             elif p[1]=='int' and p[4][-1]=='f':
-                p[0]=p[4][0:-1]+['FTOI']+[f"STORE {mem_address}"]
+                p[0]=p[4][:-1]+['FTOI']+[f"STORE {mem_address}"]
             elif p[1]=='float' and p[4][-1]=='f':
-                p[0]=p[4][0:-1]+[f"STORE {mem_address}"]
+                p[0]=p[4][:-1]+[f"STORE {mem_address}"]
             p[0]+=[f"LOAD {mem_address}"]
             for n in range(1, len(p[2])):
                 vn = p[2][n]
@@ -88,7 +88,7 @@ def p_statement(p):
                 else:
                     p[0] += [f"STORE {mem_address}"]
     if p[1]=='write':
-        p[0]=p[3][0:-1]+['OUT']
+        p[0]=p[3][:-1]+['OUT']
     if p[1]=='if':
         if len(p)==6:
             p[0]=p[2]+[f'JMP_NO {len(p[4])+1}']+p[4]
@@ -112,22 +112,22 @@ def p_expression(p):
     if len(p)==4:
         if p[2]=='A_PLUS':
             if p[1][-1]=='f' and p[3][-1]=='f':
-                p[0]=p[1][0:-1]+p[3][0:-1]+['ADD','f']
+                p[0]=p[1][:-1]+p[3][:-1]+['ADD','f']
             elif p[1][-1]=='i' and p[3][-1]=='i':
-                p[0]=p[1][0:-1]+p[3][0:-1]+['ADD','i']
+                p[0]=p[1][:-1]+p[3][:-1]+['ADD','i']
             elif p[1][-1]=='f' and p[3][-1]=='i':
-                p[0]=p[1][0:-1]+p[3][0:-1]+['ITOF']+['ADD','f']
+                p[0]=p[1][:-1]+p[3][:-1]+['ITOF']+['ADD','f']
             elif p[1][-1]=='i' and p[3][-1]=='f':
-                p[0]=p[1][0:-1]+['ITOF']+p[3][0:-1]+['ADD','f']
+                p[0]=p[1][:-1]+['ITOF']+p[3][:-1]+['ADD','f']
         elif p[2]=='A_MINUS':
             if p[1][-1]=='f' and p[3][-1]=='f':
-                p[0]=p[1][0:-1]+p[3][0:-1]+['SUB','f']
+                p[0]=p[1][:-1]+p[3][:-1]+['SUB','f']
             elif p[1][-1]=='i' and p[3][-1]=='i':
-                p[0]=p[1][0:-1]+p[3][0:-1]+['SUB','i']
+                p[0]=p[1][:-1]+p[3][:-1]+['SUB','i']
             elif p[1][-1]=='f' and p[3][-1]=='i':
-                p[0]=p[1][0:-1]+p[3][0:-1]+['ITOF']+['SUB','f']
+                p[0]=p[1][:-1]+p[3][:-1]+['ITOF']+['SUB','f']
             elif p[1][-1]=='i' and p[3][-1]=='f':
-                p[0]=p[1][0:-1]+['ITOF']+p[3][0:-1]+['SUB','f']
+                p[0]=p[1][:-1]+['ITOF']+p[3][:-1]+['SUB','f']
     else:
         p[0]=p[1]
 
@@ -138,22 +138,22 @@ def p_term(p):
     if len(p)==4:
         if p[2]=='A_MULTIPLY':
             if p[1][-1]=='f' and p[3][-1]=='f':
-                p[0]=p[1][0:-1]+p[3][0:-1]+['MULT','f']
+                p[0]=p[1][:-1]+p[3][:-1]+['MULT','f']
             elif p[1][-1]=='i' and p[3][-1]=='i':
-                p[0]=p[1][0:-1]+p[3][0:-1]+['MULT','i']
+                p[0]=p[1][:-1]+p[3][:-1]+['MULT','i']
             elif p[1][-1]=='f' and p[3][-1]=='i':
-                p[0]=p[1][0:-1]+p[3][0:-1]+['ITOF']+['MULT','f']
+                p[0]=p[1][:-1]+p[3][:-1]+['ITOF']+['MULT','f']
             elif p[1][-1]=='i' and p[3][-1]=='f':
-                p[0]=p[1][0:-1]+['ITOF']+p[3][0:-1]+['MULT','f']
+                p[0]=p[1][:-1]+['ITOF']+p[3][:-1]+['MULT','f']
         elif p[2]=='A_DIVIDE':
             if p[1][-1]=='f' and p[3][-1]=='f':
-                p[0]=p[1][0:-1]+p[3][0:-1]+['DIV','f']
+                p[0]=p[1][:-1]+p[3][:-1]+['DIV','f']
             elif p[1][-1]=='i' and p[3][-1]=='i':
-                p[0]=p[1][0:-1]+p[3][0:-1]+['DIV','i']
+                p[0]=p[1][:-1]+p[3][:-1]+['DIV','i']
             elif p[1][-1]=='f' and p[3][-1]=='i':
-                p[0]=p[1][0:-1]+p[3][0:-1]+['ITOF']+['DIV','f']
+                p[0]=p[1][:-1]+p[3][:-1]+['ITOF']+['DIV','f']
             elif p[1][-1]=='i' and p[3][-1]=='f':
-                p[0]=p[1][0:-1]+['ITOF']+p[3][0:-1]+['DIV','f']
+                p[0]=p[1][:-1]+['ITOF']+p[3][:-1]+['DIV','f']
     else:
         p[0]=p[1]
 
@@ -195,24 +195,24 @@ def p_factor(p):
             p[0]=[f"LOAD {mem_address}"]+['FTOI', 'i']
     elif len(p)==7:
         if p[2]=='int' and  p[5][-1]=='i':
-            p[0]=p[5][0:-1]+['i']
+            p[0]=p[5][:-1]+['i']
         elif p[2]=='float' and p[5][-1]=='f':
-            p[0]=p[5][0:-1]+['f']
+            p[0]=p[5][:-1]+['f']
         elif p[2]=='float' and p[5][-1]=='i':
-            p[0]=p[5][0:-1]+['ITOF', 'f']
+            p[0]=p[5][:-1]+['ITOF', 'f']
         elif p[2]=='int' and p[5][-1]=='f':
-            p[0]=p[5][0:-1]+['FTOI', 'i']
+            p[0]=p[5][:-1]+['FTOI', 'i']
 
 def p_relation(p):
     'relation : expression CMP expression'
     if p[1][-1]=='i' and p[3][-1]=='i':
-        p[0] = p[1][0:-1]+p[3][0:-1]
+        p[0] = p[1][:-1]+p[3][:-1]
     elif p[1][-1]=='f' and p[3][-1]=='i':
-        p[0] = p[1][0:-1]+p[3][0:-1]+['ITOF']
+        p[0] = p[1][:-1]+p[3][:-1]+['ITOF']
     elif p[1][-1]=='f' and p[3][-1]=='f':
-        p[0] = p[1][0:-1]+p[3][0:-1]
+        p[0] = p[1][:-1]+p[3][:-1]
     elif p[1][-1]=='i' and p[3][-1]=='f':
-        p[0] = p[1][0:-1]+['ITOF']+p[3][0:-1]
+        p[0] = p[1][:-1]+['ITOF']+p[3][:-1]
     if p[2] == 'C_EQ':
         p[0] += ['CMP 0']
     elif p[2] == 'C_LT':

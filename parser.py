@@ -252,5 +252,6 @@ def parse(code):
         mem_tab[key] = const_tab[key]
     for key in var_tab:
         mem_tab[key] = [var_tab[key][0], var_tab[key][1]+len(const_tab)]
+    lexer.lineno=0
     parser.parse(code, lexer=lexer)
     return (P_CODE, mem_tab)
